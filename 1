@@ -1,0 +1,316 @@
+---
+schema_version: "2.0"
+metadata:
+  created_at: "2026-09-17T01:13:12.171270207+05:30"
+  updated_at: "2026-09-17T03:56:03.497560655+05:30"
+  created_by: root
+opencenter:
+  meta:
+    name: my-first-cluster
+    organization: local
+    env: dev
+    region: DFW3
+    stage: bootstrap
+    status: failed
+  cluster:
+    cluster_name: my-first-cluster
+    base_domain: k8s.opencenter.cloud
+    cluster_fqdn: my-first-cluster.dfw3.k8s.opencenter.cloud
+    admin_email: admin@example.com
+    kubernetes:
+      version: 1.35.0
+      api_port: 6443
+      kube_vip_enabled: false
+      kubelet_rotate_server_certs: false
+      subnet_pods: 10.244.0.0/16
+      subnet_services: 10.96.0.0/16
+      network_plugin:
+        calico:
+          enabled: true
+          version: 3.31.6
+          vxlan_mode: Always
+          network_policy: true
+          nat_outgoing: false
+          install_method: helm
+      security:
+        pod_security_policy: false
+        pod_security_standards: baseline
+        audit_logging: true
+        encryption_at_rest: true
+        k8s_hardening: false
+      oidc:
+        enabled: false
+        username_claim: sub
+        groups_claim: groups
+  infrastructure:
+    provider: kind
+    ssh:
+      authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO9CNr2coCuTC7JJ3IZGKQhWrOdK7AqYQuJapMPbK9tE local-my-first-cluster-DFW3
+      username: ubuntu
+      user: ubuntu
+      key_path: /root/.config/opencenter/clusters/secrets/local/my-first-cluster/ssh/my-first-cluster
+    os_version: "24"
+    server_group_affinity:
+      - anti-affinity
+    node_naming:
+      prefix: my-first-cluster
+      suffix: DFW3
+    networking:
+      subnet_nodes: 10.2.128.0/22
+      allocation_pool_start: 10.2.128.10
+      allocation_pool_end: 10.2.131.250
+      gateway: 10.2.128.1
+      vrrp_ip: ""
+      vrrp_enabled: false
+      loadbalancer_provider: ovn
+      use_designate: false
+      dns_zone_name: cluster.local
+      dns_nameservers:
+        - 8.8.8.8
+        - 8.8.4.4
+      ntp_servers:
+        - time.dfw3.example.com
+        - time2.dfw3.example.com
+      security:
+        allowed_cidrs:
+          - 0.0.0.0/0
+        deny_all: false
+        os_hardening: false
+    compute:
+      master_count: 1
+      worker_count: 2
+      worker_count_windows: 0
+    storage:
+      default_storage_class: standard
+      worker_volume_size: 40
+      worker_volume_destination_type: volume
+      worker_volume_source_type: image
+      worker_volume_type: local-path
+      worker_volume_delete_on_termination: false
+      master_volume_size: 40
+      master_volume_destination_type: volume
+      master_volume_source_type: image
+      master_volume_type: local-path
+      master_volume_delete_on_termination: false
+    cloud: {}
+    kind:
+      cluster_name: my-first-cluster
+      kubernetes_version: 1.35.0
+      control_plane_count: 1
+      worker_count: 2
+      api_server_address: 127.0.0.1
+      api_server_port: 6443
+      pod_subnet: 10.244.0.0/16
+      service_subnet: 10.96.0.0/16
+      disable_default_cni: false
+      ingress_enabled: true
+      kubeconfig_path_policy: cluster-owned
+      registry:
+        name: kind-registry
+        port: 5001
+  secrets:
+    backend: sops
+  identity:
+    oidc:
+      enabled: true
+      source: internal
+      provider: keycloak
+  services:
+    calico:
+      enabled: true
+      namespace: calico-system
+    cert-manager:
+      enabled: true
+      namespace: cert-manager
+    etcd-backup:
+      enabled: false
+      namespace: kube-system
+    external-snapshotter:
+      enabled: true
+      namespace: external-snapshotter
+    fluxcd:
+      enabled: true
+      namespace: flux-system
+    gateway:
+      enabled: true
+      namespace: gateway
+    gateway-api:
+      enabled: true
+      namespace: envoy-gateway-system
+    harbor:
+      enabled: false
+      namespace: harbor
+      storage_type: s3
+      registry_volume_size: 100
+      jobservice_volume_size: 10
+      database_volume_size: 10
+      redis_volume_size: 10
+      trivy_volume_size: 10
+    headlamp:
+      enabled: true
+      namespace: headlamp
+      hostname: dashboard.my-first-cluster.dfw3.k8s.opencenter.cloud
+    kafka-cluster:
+      enabled: false
+      namespace: kafka-system
+    keycloak:
+      enabled: true
+      namespace: keycloak
+      hostname: auth.my-first-cluster.dfw3.k8s.opencenter.cloud
+      resource_requests_cpu: 500m
+      resource_limits_cpu: "2"
+      instances: 1
+    kube-prometheus-stack:
+      enabled: true
+      namespace: observability
+    kyverno:
+      enabled: true
+      namespace: kyverno
+    loki:
+      enabled: false
+      namespace: observability
+    longhorn:
+      enabled: false
+      namespace: longhorn-system
+      hostname: longhorn.my-first-cluster.dfw3.k8s.opencenter.cloud
+    metallb:
+      enabled: false
+      namespace: metallb-system
+    mimir:
+      enabled: false
+      namespace: observability
+    olm:
+      enabled: true
+      namespace: olm
+    openstack-ccm:
+      enabled: false
+      namespace: openstack-ccm
+    openstack-csi:
+      enabled: false
+      namespace: openstack-csi
+    opentelemetry-kube-stack:
+      enabled: false
+      namespace: observability
+    postgres-operator:
+      enabled: true
+      namespace: postgres-operator
+    rbac-manager:
+      enabled: true
+      namespace: rbac-system
+    sealed-secrets:
+      enabled: false
+      namespace: sealed-secrets
+    sources:
+      enabled: true
+      namespace: flux-system
+    tempo:
+      enabled: false
+      namespace: observability
+    velero:
+      enabled: false
+      namespace: velero
+    vsphere-csi:
+      enabled: false
+      namespace: vmware-system-csi
+    weave-gitops:
+      enabled: false
+      namespace: flux-system
+  managed_services:
+    alert-proxy:
+      enabled: false
+      http_route_fqdn: alerts.my-first-cluster.dfw3.k8s.opencenter.cloud
+  gitops:
+    repository:
+      url: https://github.com/deep8346/my-first-cluster-gitops.git
+      branch: main
+      path: clusters/my-first-cluster
+      local_dir: /root/.config/opencenter/clusters/gitops/local
+    base_repo:
+      url: https://github.com/opencenter-cloud/openCenter-gitops-base.git
+      branch: main
+    auth:
+      token:
+        provider: github
+        token: CHANGEME
+    flux:
+      interval: 5m
+      prune: true
+deployment:
+  auto_deploy: true
+  method: kubespray
+  kubespray:
+    version: 2.31.0
+    modules:
+      kubespray:
+        source: github.com/opencenter-cloud/openCenter-gitops-base.git//iac/provider/kubespray?ref=main
+        enabled: true
+    kubespray_cluster:
+      source: github.com/opencenter-cloud/openCenter-gitops-base.git//iac/provider/kubespray?ref=main
+      enabled: true
+opentofu:
+  backend:
+    type: local
+    local:
+      path: .opentofu-local-my-first-cluster/terraform.tfstate
+secrets:
+  sops_age_key_file: /root/.config/opencenter/clusters/secrets/local/my-first-cluster/age/keys/my-first-cluster-key.txt
+  ssh_key:
+    private: /root/.config/opencenter/clusters/secrets/local/my-first-cluster/ssh/my-first-cluster
+    public: /root/.config/opencenter/clusters/secrets/local/my-first-cluster/ssh/my-first-cluster.pub
+    cypher: ed25519
+  global:
+    aws:
+      application:
+        access_key: CHANGEME
+        secret_access_key: CHANGEME
+        region: DFW3
+  cert_manager:
+    aws:
+      default:
+        enabled: false
+        aws_access_key: CHANGEME
+        aws_secret_access_key: CHANGEME
+        region: us-east-1
+  loki:
+    swift_application_credential_secret: CHANGEME
+    s3_access_key_id: CHANGEME
+    s3_secret_access_key: CHANGEME
+  mimir:
+    swift_application_credential_secret: CHANGEME
+  keycloak:
+    client_secret: ax0zdRE8rpvpN2jvaAKggcrBsns49LDkgUCoeZl13gE=
+    admin_password: ax0zdRE8rpvpN2jvaAKggcrBsns49LDkgUCoeZl13gE=111
+  headlamp:
+    oidc_client_secret: CHANGEME
+  weave_gitops:
+    password: CHANGEME
+  grafana:
+    admin_user: admin
+    admin_password: mV6UX9JeWm25QnlN
+  harbor:
+    admin_password: CHANGEME
+    registry_password: CHANGEME
+    database_password: CHANGEME
+    s3_access_key_id: CHANGEME
+    s3_secret_access_key: CHANGEME
+  tempo:
+    access_key: CHANGEME
+    secret_key: CHANGEME
+    swift_application_credential_secret: CHANGEME
+  alert_proxy:
+    core_device_id: CHANGEME
+    account_service_token: CHANGEME
+    core_account_number: CHANGEME
+  vsphere_csi:
+    vcenter_host: CHANGEME
+    username: CHANGEME
+    password: CHANGEME
+    datacenters: Datacenter1
+    insecure_flag: "true"
+    port: "443"
+    datastoreurl: CHANGEME
+  sops:
+    enabled: true
+    age_key_file: /root/.config/opencenter/clusters/secrets/local/my-first-cluster/age/keys/my-first-cluster-key.txt
+    encrypted_regex: ^(data|stringData|secret)$
